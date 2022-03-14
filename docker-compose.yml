@@ -20,10 +20,11 @@ services:
       - "8081:8081"
   
   rabbit:
-    image: rabbitmq
+    image: rabbitmq:3-management
     container_name: tutorial_rabbit
     ports:
       - 5672:5672
+      - 15672:15672
 
   server:
     # container_name: tutorial_backend

@@ -16,10 +16,10 @@ app.use(bodyParser.json());
 
 app.use('/admin/queues', router);
 
-receive({ exchange: 'joes', bindingKey: 'foo', queue: 'a' });
-receive({ exchange: 'joes', bindingKey: 'foo', queue: 'b' });
-receive({ exchange: 'joes', bindingKey: 'bar', queue: 'a' });
-receive({ exchange: 'joes', bindingKey: 'bar', queue: 'b' });
+receive({ exchange: 'joes', bindingKey: 'order.created', queue: 'billing' });
+receive({ exchange: 'joes', bindingKey: 'order.created', queue: 'email' });
+receive({ exchange: 'joes', bindingKey: 'order.deleted', queue: 'billing' });
+receive({ exchange: 'joes', bindingKey: 'order.deleted', queue: 'email' });
 
 // consume();
 
@@ -31,8 +31,8 @@ app.get('/bull', async (req, res) => {
 
 app.get('/rabbit', async (req, res) => {
     console.log('/rabbit');
-    await send({ exchange: 'joes', routingKey: 'foo', msg: { foo: 'bar' } })
-    await send({ exchange: 'joes', routingKey: 'bar', msg: { foo: 'bar' } })
+    await send({ exchange: 'joes', routingKey: 'order.created', msg: { id: 'foobar' } })
+    await send({ exchange: 'joes', routingKey: 'order.deleted', msg: { id: 'foobar' } })
     res.send({ status: 'ok' });
 });
 
