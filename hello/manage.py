@@ -9,18 +9,19 @@ def main():
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'hello.settings')
 
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbit'))
-    channel = connection.channel()
 
-    channel.queue_declare(queue='hello')
+    # connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbit'))
+    # channel = connection.channel()
 
-    def callback(ch, method, properties, body):
-        print(" [x] Received %r" % body)
+    # channel.queue_declare(queue='hello')
 
-    channel.basic_consume(queue='hello', on_message_callback=callback, auto_ack=True)
+    # def callback(ch, method, properties, body):
+    #     print(" [x] Received %r" % body)
 
-    print(' [*] Waiting for messages. To exit press CTRL+C')
-    channel.start_consuming()
+    # channel.basic_consume(queue='hello', on_message_callback=callback, auto_ack=True)
+
+    # print(' [*] Waiting for messages. To exit press CTRL+C')
+    # channel.start_consuming()
 
 
 

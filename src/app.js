@@ -5,6 +5,9 @@ import { router } from 'bull-board';
 import health from './routes/health.js';
 import { send } from './send.js';
 import { receive } from './receive.js';
+import { produce } from './kafka_producer.js';
+import { consume } from './kafka_consumer.js';
+
 const app = express();
 
 app.use(health);
@@ -13,7 +16,12 @@ app.use(bodyParser.json());
 
 app.use('/admin/queues', router);
 
-// receive();
+receive({ exchange: 'joes', bindingKey: 'foo', queue: 'a' });
+receive({ exchange: 'joes', bindingKey: 'foo', queue: 'b' });
+receive({ exchange: 'joes', bindingKey: 'bar', queue: 'a' });
+receive({ exchange: 'joes', bindingKey: 'bar', queue: 'b' });
+
+// consume();
 
 app.get('/bull', async (req, res) => {
     console.log('/bull');
@@ -23,7 +31,14 @@ app.get('/bull', async (req, res) => {
 
 app.get('/rabbit', async (req, res) => {
     console.log('/rabbit');
-    await send({ foo: 'bar' })
+    await send({ exchange: 'joes', routingKey: 'foo', msg: { foo: 'bar' } })
+    await send({ exchange: 'joes', routingKey: 'bar', msg: { foo: 'bar' } })
+    res.send({ status: 'ok' });
+});
+
+app.get('/kafka', async (req, res) => {
+    console.log('/kafka');
+    await produce({ foo: 'bar' })
     res.send({ status: 'ok' });
 });
 

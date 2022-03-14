@@ -1,6 +1,16 @@
 import amqp from 'amqplib';
 
-export const receive = async (msg) => {
+/**
+ * 
+ * Binding key distinguishes event on exchange
+ * Queue distinguishes que on event
+ * 
+ * Example: 
+ * 
+ * bindingKey = new-sales-order
+ * queue = [order_printer, order_billing, order_archive and order_tracking]
+ */
+export const receive = async ({ exchange = '', queue = '', bindingKey = ''}) => {
   try {
     // Get a connection to the queue
     const conn = await amqp.connect({
@@ -9,20 +19,16 @@ export const receive = async (msg) => {
     });
 
     // Creaete a channel
-    const ch = await conn.createChannel();
+    const channel = await conn.createChannel();
 
-    // Define queue
-    const queue = 'hello';
+    await channel.assertExchange(exchange, 'direct', { durable: false });
+    await channel.assertQueue(queue, {durable: true})
+    await channel.bindQueue(queue, exchange, bindingKey)
 
-    // Make sure queue is there
-    await ch.assertQueue(queue, {
-      durable: false
-    });
+    console.log(`Waiting for messages in exchange: ${exchange} queue: ${queue} bindingKey: ${bindingKey}`);
 
-    console.log("Waiting for messages in %s. To exit press CTRL+C", queue);
-
-    ch.consume(queue, function(msg) {
-        console.log("Received %s", msg.content.toString());
+    channel.consume(queue, function(msg) {
+        console.log(`Received queue: ${queue} bindingKey: ${bindingKey}`, msg.content.toString());
     }, {
         noAck: true
     });
