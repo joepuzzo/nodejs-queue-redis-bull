@@ -1,22 +1,14 @@
-import amqp from 'amqplib';
-
-export const send = async ({ msg, exchange = '', routingKey = '' }) => {
+export const send = async ({ msg, connection, exchange = '', routingKey = '' }) => {
   try {
-    // Get a connection to the queue
-    const conn = await amqp.connect({
-      protocol: 'amqp',
-      hostname: process.env.MQ_HOSTNAME,
-    });
-
     // Creaete a channel
-    const channel = await conn.createChannel();
-
+    const channel = await connection.createChannel();
+    console.log(`Sending on exchange ${exchange} to routingKey: ${routingKey}`)
     await channel.assertExchange(exchange, 'direct', { durable: false });
     await channel.publish(exchange, routingKey, Buffer.from(JSON.stringify(msg)));
 
-    // Close the connection
+    // Close the channel
     await channel.close();
-    await conn.close();
+    // await connection.close(); // No need to do since connection was passed in!
 
   } catch (error) {
     console.error(error);

@@ -22,6 +22,9 @@ services:
   rabbit:
     image: rabbitmq:3-management
     container_name: tutorial_rabbit
+    volumes:
+      - ./rabbitmq/data:/var/lib/rabbitmq/mnesia/rabbit@my-rabbit
+      - ./rabbitmq/logs:/var/log/rabbitmq/log
     ports:
       - 5672:5672
       - 15672:15672
