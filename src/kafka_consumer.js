@@ -1,7 +1,5 @@
 import { Kafka } from 'kafkajs';
 
-
-
 export const consume = async () => {
   const kafka = new Kafka({
     clientId: 'my-app',
