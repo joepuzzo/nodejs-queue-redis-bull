@@ -19,6 +19,7 @@ export const consume = async () => {
         partition,
         offset: message.offset,
         value: message.value.toString(),
+        key: message.key
       })
     },
   })

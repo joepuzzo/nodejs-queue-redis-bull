@@ -33,6 +33,8 @@ const start = async () => {
     receive({ connection, exchange: 'joes', bindingKey: 'order.deleted', queue: 'billing' });
     receive({ connection, exchange: 'joes', bindingKey: 'order.deleted', queue: 'email' });
 
+    consume();
+
     // consume();
 
     app.get('/bull', async (req, res) => {
